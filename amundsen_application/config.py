@@ -100,10 +100,33 @@ class Config:
     ACL_ENABLED_DASHBOARD_PREVIEW = set()  # type: Set[Optional[str]]
 
 
+# TEST_USER_ID = 'test_user_id'
+
+
+# def get_test_user(app) -> User:
+#     user_info = {
+#         'email': 'test@email.com',
+#         'user_id': TEST_USER_ID,
+#         'first_name': 'Firstname',
+#         'last_name': 'Lastname',
+#         'full_name': 'Firstname Lastname',
+#     }
+#     return load_user(user_info)
+
 class LocalConfig(Config):
     DEBUG = False
     TESTING = False
     LOG_LEVEL = 'DEBUG'
+
+    # METABASE_USERNAME='hongmin.wang@cardinfolink.com'
+    # METABASE_PASSWORD='aa'
+    # METABASE_DATABASE_ID=6
+
+    METABASE_USERNAME = os.environ.get('METABASE_USERNAME', '')
+    METABASE_PASSWORD = os.environ.get('METABASE_PASSWORD', '')
+    METABASE_DATABASE_ID = os.environ.get('METABASE_DATABASE_ID', 6)
+
+    AUTH_USER_METHOD = get_test_user
 
     FRONTEND_PORT = '5000'
     # If installing locally directly from the github source
@@ -112,7 +135,7 @@ class LocalConfig(Config):
     METADATA_PORT = '5002'
 
     # If installing using the Docker bootstrap, this should be modified to the docker host ip.
-    LOCAL_HOST = '0.0.0.0'
+    LOCAL_HOST = '127.0.0.1'
 
     FRONTEND_BASE = os.environ.get('FRONTEND_BASE',
                                    'http://{LOCAL_HOST}:{PORT}'.format(

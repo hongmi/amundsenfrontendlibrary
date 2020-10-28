@@ -3,6 +3,7 @@
 
 import abc
 from typing import Dict
+from http import HTTPStatus
 
 from flask import Response
 
@@ -11,6 +12,10 @@ class BasePreviewClient(abc.ABC):
     @abc.abstractmethod
     def __init__(self) -> None:
         pass  # pragma: no cover
+
+    @abc.abstractmethod
+    def login(self) -> int:
+        raise NotImplementedError  # pragma: no cover
 
     @abc.abstractmethod
     def get_preview_data(self, params: Dict, optionalHeaders: Dict = None) -> Response:

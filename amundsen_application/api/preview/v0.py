@@ -32,8 +32,16 @@ def get_table_preview() -> Response:
     # TODO: Want to further separate this file into more blueprints, perhaps a Blueprint class is the way to go
     global PREVIEW_CLIENT_INSTANCE
     try:
+        logging.info('begin do preview')
         if PREVIEW_CLIENT_INSTANCE is None and PREVIEW_CLIENT_CLASS is not None:
             PREVIEW_CLIENT_INSTANCE = PREVIEW_CLIENT_CLASS()
+            if PREVIEW_CLIENT_INSTANCE is not None:
+                status_code = PREVIEW_CLIENT_INSTANCE.login()
+                if status_code != HTTPStatus.OK:
+                    logging.error('The preview client login failed: ' + str(status_code))
+                    raise Exception('The preview client login failed')
+                else:
+                    logging.info('login metabase success')
 
         if PREVIEW_CLIENT_INSTANCE is None:
             payload = jsonify({'previewData': {}, 'msg': 'A client for the preview feature must be configured'})
@@ -52,6 +60,12 @@ def get_table_preview() -> Response:
             else:
                 logging.error('Preview data dump returned errors: ' + str(errors))
                 raise Exception('The preview client did not return a valid PreviewData object')
+        elif status_code == HTTPStatus.UNAUTHORIZED:
+            # try to login
+            status_code = PREVIEW_CLIENT_INSTANCE.login()
+            if status_code != HTTPStatus.OK:
+                logging.error('The preview client login failed: ' + str(status_code))
+                raise Exception('The preview client login failed')
         else:
             message = 'Encountered error: Preview client request failed with code ' + str(status_code)
             logging.error(message)
