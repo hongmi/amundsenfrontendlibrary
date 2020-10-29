@@ -63,7 +63,7 @@ class MetabasePreviewClient(BaseMetabasePreviewClient):
             }  # type: Dict[str, Any]
 
             # Superset's sql_json endpoint requires the id of the database that it will execute the query on
-            database_id = app.config['METABASE_DATABASE_ID']  # OR params.get('database') in a real use case
+            database_id = int(app.config['METABASE_DATABASE_ID'])  # OR params.get('database') in a real use case
             request_data['database'] = database_id
 
             # Generate the sql query for the desired data preview content
